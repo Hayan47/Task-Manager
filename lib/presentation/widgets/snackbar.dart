@@ -17,7 +17,7 @@ class MySnackBar extends SnackBar {
               gradient: const LinearGradient(
                 colors: [
                   Colors.black,
-                  MyColors.myred2,
+                  MyColors.myred,
                 ],
               ),
               boxShadow: const [

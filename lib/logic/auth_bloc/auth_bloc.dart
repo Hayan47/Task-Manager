@@ -6,7 +6,7 @@ part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  AuthService authService = AuthService();
+  AuthServices authService = AuthServices();
   AuthBloc() : super(AuthInitial()) {
     on<LoginEvent>((event, emit) async {
       try {

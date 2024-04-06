@@ -1,10 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:task_manager/services/models/user_model.dart';
 
-class AuthService {
+class AuthServices {
   late Dio dio;
 
-  AuthService() {
+  AuthServices() {
     BaseOptions options = BaseOptions(
       baseUrl: 'https://reqres.in/api/',
       receiveDataWhenStatusError: true,

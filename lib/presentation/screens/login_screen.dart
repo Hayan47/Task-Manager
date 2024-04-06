@@ -34,7 +34,7 @@ class _LogInScreenState extends State<LogInScreen> {
             child: Container(
               height: MediaQuery.sizeOf(context).height * 0.6,
               decoration: const BoxDecoration(
-                color: MyColors.myred2,
+                color: MyColors.myred,
               ),
             ),
           ),
@@ -44,7 +44,7 @@ class _LogInScreenState extends State<LogInScreen> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   MySnackBar(
                     icon: const Icon(Icons.error,
-                        color: MyColors.myred2, size: 18),
+                        color: MyColors.myred, size: 18),
                     message: state.message,
                     margin: 5,
                   ),
