@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_manager/services/apis/task_services.dart';
@@ -11,7 +12,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   DatabaseHelper databaseHelper = DatabaseHelper();
   bool hasMore = false;
   int currentPage = 1;
-  int totalPages = 0;
+  int totalPages = 2;
   List<Task> tasks = [];
 
   Future<bool> isCacheValid() async {
@@ -24,29 +25,26 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       try {
         emit(TasksLoading());
         print(state);
-        // //!get from cache
-        // if (await isCacheValid()) {
-        //   final tasksMapList = await databaseHelper.gettasks();
-        //   tasks = tasksMapList.map((e) => Task.fromJson(e)).toList();
-        //   emit(TasksLoaded(tasks: tasks, hasMore: true));
-        //   print(state);
-        //   print('FROM CACHE');
-        //   return;
-        //   //!get from api
-        // } else {
-        final data = await taskServices.getData();
-        totalPages = data.totalPages;
-        if (totalPages > currentPage) {
-          hasMore = true;
+        //!get from cache
+        if (await isCacheValid()) {
+          final tasksMapList = await databaseHelper.gettasks();
+          tasks = tasksMapList.map((e) => Task.fromJson(e)).toList();
+          emit(TasksLoaded(
+              tasks: tasks, hasMore: true, dateTime: DateTime.now()));
+          print(state);
+          print('FROM CACHE');
+          return;
+          //!get from api
         } else {
-          hasMore = false;
+          final data = await taskServices.getData();
+          totalPages = data.totalPages;
+          tasks = await taskServices.getTasks(event.page);
+          databaseHelper.addTasks(tasks);
+          emit(TasksLoaded(
+              tasks: tasks, hasMore: hasMore, dateTime: DateTime.now()));
+          print(state);
+          print('FROM API');
         }
-        tasks = await taskServices.getTasks(event.page);
-        // databaseHelper.addTasks(tasks);
-        emit(TasksLoaded(tasks: tasks, hasMore: hasMore));
-        print(state);
-        print('FROM API');
-        // }
       } catch (e) {
         emit(const TasksError(message: 'Error Getting Tasks'));
         print(state);
@@ -59,16 +57,19 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         currentPage++;
         if (currentPage > totalPages) {
           hasMore = false;
-          emit(TasksLoaded(tasks: tasks, hasMore: hasMore));
+          emit(TasksLoaded(
+              tasks: tasks, hasMore: hasMore, dateTime: DateTime.now()));
           return;
         } else if (currentPage == totalPages) {
           hasMore = false;
         }
         final List<Task> newTasks = await taskServices.getTasks(currentPage);
         tasks.addAll(newTasks);
-        // databaseHelper.addTasks(tasks);
-        emit(TasksLoaded(tasks: tasks, hasMore: hasMore));
+        emit(TasksLoaded(
+            tasks: tasks, hasMore: hasMore, dateTime: DateTime.now()));
         print(state);
+      } on DioException catch (e) {
+        print(e);
       } catch (e) {
         emit(const TasksError(message: 'Error Getting Tasks'));
         print(state);

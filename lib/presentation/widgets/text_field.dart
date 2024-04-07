@@ -28,9 +28,11 @@ class MyTextField extends StatelessWidget {
           textInputAction: TextInputAction.next,
           keyboardType: textInputType,
           style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                color: MyColors.mywhite,
+                color: Colors.black,
                 fontSize: 16,
               ),
+          cursorColor: Colors.black,
+          cursorErrorColor: Colors.black,
           controller: controller,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: validator,
@@ -39,15 +41,14 @@ class MyTextField extends StatelessWidget {
             border: InputBorder.none,
             hintText: hint,
             hintStyle: Theme.of(context).textTheme.bodySmall!.copyWith(
-                  color: MyColors.mywhite,
+                  color: Colors.black,
                   fontSize: 16,
                 ),
             errorStyle: Theme.of(context).textTheme.bodySmall!.copyWith(
-                  color: Colors.black,
+                  color: MyColors.myred,
                   fontSize: 10,
                 ),
           ),
-          cursorColor: Colors.white,
         ),
       ],
     );

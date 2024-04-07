@@ -111,7 +111,7 @@ class _LogInScreenState extends State<LogInScreen> {
                                                     .textTheme
                                                     .bodySmall!
                                                     .copyWith(
-                                                      color: Colors.white,
+                                                      color: Colors.black,
                                                       fontSize: 30,
                                                     ),
                                               ),
@@ -122,7 +122,7 @@ class _LogInScreenState extends State<LogInScreen> {
                                                     .textTheme
                                                     .bodySmall!
                                                     .copyWith(
-                                                      color: Colors.white,
+                                                      color: Colors.black,
                                                       fontSize: 14,
                                                     ),
                                               ),
@@ -168,7 +168,7 @@ class _LogInScreenState extends State<LogInScreen> {
                                                 hidePassword
                                                     ? Icons.visibility_off
                                                     : Icons.visibility,
-                                                color: MyColors.mywhite,
+                                                color: Colors.black,
                                               ),
                                             ),
                                           ),
@@ -187,7 +187,7 @@ class _LogInScreenState extends State<LogInScreen> {
                                                       .textTheme
                                                       .bodySmall!
                                                       .copyWith(
-                                                        color: Colors.white,
+                                                        color: Colors.black,
                                                         fontSize: 13,
                                                       ),
                                                 ),
