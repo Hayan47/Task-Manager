@@ -33,6 +33,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
               tasks: tasks, hasMore: true, dateTime: DateTime.now()));
           print(state);
           print('FROM CACHE');
+          currentPage = 1;
           return;
           //!get from api
         } else {
@@ -44,7 +45,9 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
               tasks: tasks, hasMore: hasMore, dateTime: DateTime.now()));
           print(state);
           print('FROM API');
+          currentPage = 1;
         }
+        currentPage++;
       } catch (e) {
         emit(const TasksError(message: 'Error Getting Tasks'));
         print(state);
@@ -54,7 +57,6 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
 
     on<LoadNextPageEvent>((event, emit) async {
       try {
-        currentPage++;
         if (currentPage > totalPages) {
           hasMore = false;
           emit(TasksLoaded(
@@ -68,6 +70,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         emit(TasksLoaded(
             tasks: tasks, hasMore: hasMore, dateTime: DateTime.now()));
         print(state);
+        currentPage = 1;
       } on DioException catch (e) {
         print(e);
       } catch (e) {
