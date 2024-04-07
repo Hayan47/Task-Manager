@@ -24,6 +24,12 @@ class _LogInScreenState extends State<LogInScreen> {
   final formKey2 = GlobalKey<FormState>();
 
   @override
+  void initState() {
+    context.read<AuthBloc>().add(CheckAuthState());
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -34,7 +40,7 @@ class _LogInScreenState extends State<LogInScreen> {
             child: Container(
               height: MediaQuery.sizeOf(context).height * 0.6,
               decoration: const BoxDecoration(
-                color: MyColors.myred,
+                color: Color(0xffffe681),
               ),
             ),
           ),

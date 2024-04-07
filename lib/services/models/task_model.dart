@@ -54,6 +54,16 @@ class Task extends Equatable {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'email': email,
+      'first_name': firstName,
+      'last_name': lastName,
+      'avatar': avatar,
+    };
+  }
+
   @override
   List<Object?> get props => [id, email, firstName, lastName, avatar];
 }

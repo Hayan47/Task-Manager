@@ -22,3 +22,5 @@ class AuthLoginErrorState extends AuthState {
 
   const AuthLoginErrorState({required this.message});
 }
+
+class AuthLoggedoutState extends AuthState {}

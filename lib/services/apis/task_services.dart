@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:task_manager/services/models/task_model.dart';
-import 'package:task_manager/services/models/user_model.dart';
 
 class TaskServices {
   late Dio dio;
@@ -40,6 +39,32 @@ class TaskServices {
       return tasks.map((task) => Task.fromJson(task)).toList();
     } else {
       throw Exception("Eroor Getting Tasks");
+    }
+  }
+
+  //!add task
+  Future<String> addTask(Task task) async {
+    // final response = await dio.post("users", data: task.toJson());
+    return 'Task Added Successfully';
+  }
+
+  //!update task
+  Future<String> updateTask(Task task) async {
+    final response = await dio.put("users/${task.id}");
+    if (response.statusCode == 200) {
+      return response.data['updatedAt'];
+    } else {
+      throw Exception("Eroor Updating Tasks");
+    }
+  }
+
+  //!add task
+  Future<String> deleteTask(int taskID) async {
+    final response = await dio.delete("users/$taskID");
+    if (response.statusCode == 204) {
+      return 'task deleted successfully';
+    } else {
+      throw Exception("Eroor Deleting Tasks");
     }
   }
 }

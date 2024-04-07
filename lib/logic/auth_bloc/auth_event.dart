@@ -13,3 +13,7 @@ class LoginEvent extends AuthEvent {
 
   const LoginEvent({required this.email, required this.password});
 }
+
+class CheckAuthState extends AuthEvent {}
+
+class LogoutEvent extends AuthEvent {}

@@ -14,3 +14,21 @@ class GetTasksEvent extends TaskEvent {
 }
 
 class LoadNextPageEvent extends TaskEvent {}
+
+class AddTaskEvent extends TaskEvent {
+  final Task task;
+
+  const AddTaskEvent({required this.task});
+}
+
+class UpdateTaskEvent extends TaskEvent {
+  final Task task;
+
+  const UpdateTaskEvent({required this.task});
+}
+
+class DeleteTaskEvent extends TaskEvent {
+  final int taskID;
+
+  const DeleteTaskEvent({required this.taskID});
+}

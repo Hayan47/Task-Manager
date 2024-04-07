@@ -4,6 +4,8 @@ import 'package:task_manager/logic/auth_bloc/auth_bloc.dart';
 import 'package:task_manager/logic/task_bloc/task_bloc.dart';
 import 'package:task_manager/presentation/screens/home_screen.dart';
 import 'package:task_manager/presentation/screens/login_screen.dart';
+import 'package:task_manager/presentation/screens/task_screen.dart';
+import 'package:task_manager/services/models/task_model.dart';
 
 class AppRouter {
   late AuthBloc authBloc;
@@ -25,8 +27,11 @@ class AppRouter {
         );
       case 'home':
         return MaterialPageRoute(
-          builder: (_) => BlocProvider.value(
-            value: taskBloc,
+          builder: (_) => MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: taskBloc),
+              BlocProvider.value(value: authBloc),
+            ],
             child: const HomeScreen(),
           ),
         );
@@ -36,5 +41,6 @@ class AppRouter {
 
   void dispose() {
     authBloc.close();
+    taskBloc.close();
   }
 }

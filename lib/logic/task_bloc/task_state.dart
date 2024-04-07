@@ -29,3 +29,30 @@ final class TasksError extends TaskState {
   @override
   List<Object> get props => [message];
 }
+
+final class TaskAdded extends TaskState {
+  final String message;
+
+  const TaskAdded({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}
+
+final class TaskDeleted extends TaskState {
+  final String message;
+
+  const TaskDeleted({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}
+
+final class TaskUpdated extends TaskState {
+  final String message;
+
+  const TaskUpdated({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}

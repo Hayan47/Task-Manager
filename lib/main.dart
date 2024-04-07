@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:task_manager/app_router.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 
