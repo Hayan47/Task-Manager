@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task_manager/services/apis/auth_services.dart';
-import 'package:task_manager/services/models/user_model.dart';
+import 'package:task_manager/services/models/auth_model.dart';
 part 'auth_event.dart';
 part 'auth_state.dart';
 
@@ -12,10 +12,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<LoginEvent>((event, emit) async {
       try {
         emit(AuthLoadingState());
-        final user = await authService.login(event.email, event.password);
+        final auth = await authService.login(event.email, event.password);
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('token', user!.token);
-        emit(AuthLoggedInState(user: user!));
+        await prefs.setString('token', auth!.token);
+        emit(AuthLoggedInState(user: auth));
       } on Exception {
         emit(const AuthLoginErrorState(message: 'wrong email or password'));
       }
@@ -23,13 +23,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     on<CheckAuthState>((event, emit) async {
       try {
+        emit(AuthLoadingState());
         final prefs = await SharedPreferences.getInstance();
         final token = prefs.getString('token');
         if (token != null) {
-          emit(AuthLoggedInState(user: User(token: token)));
+          bool autharized = await authService.checkAuth(token);
+          if (!autharized) {
+            prefs.clear();
+            add(CheckAuthState());
+          }
+          emit(AuthLoggedInState(user: Auth(token: token)));
+        } else {
+          emit(const AuthLoginErrorState(message: 'You Need to Login'));
         }
       } catch (e) {
-        emit(const AuthLoginErrorState(message: 'Error'));
+        emit(const AuthLoginErrorState(message: 'Error Getting User Auth'));
       }
     });
 

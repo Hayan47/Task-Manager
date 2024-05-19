@@ -15,7 +15,7 @@ class TasksListLoading extends StatelessWidget {
         shrinkWrap: true,
         physics: const AlwaysScrollableScrollPhysics(),
         padding: EdgeInsets.zero,
-        itemCount: 5,
+        itemCount: 10,
         itemBuilder: (context, index) => Padding(
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
           child: ClipRRect(
@@ -23,7 +23,7 @@ class TasksListLoading extends StatelessWidget {
             child: Container(
               color: Colors.white,
               width: double.infinity,
-              height: MediaQuery.sizeOf(context).width * 0.5,
+              height: MediaQuery.sizeOf(context).width * 0.2,
               child: const Padding(
                 padding: EdgeInsets.all(15),
               ),

@@ -8,12 +8,24 @@ sealed class TaskEvent extends Equatable {
 }
 
 class GetTasksEvent extends TaskEvent {
-  final int page;
+  final int skip;
 
-  const GetTasksEvent({required this.page});
+  const GetTasksEvent({required this.skip});
+
+  @override
+  List<Object> get props => [skip];
 }
 
-class LoadNextPageEvent extends TaskEvent {}
+class GetTasksFromCache extends TaskEvent {
+  final int page;
+
+  const GetTasksFromCache({required this.page});
+
+  @override
+  List<Object> get props => [page];
+}
+
+// class LoadNextPageEvent extends TaskEvent {}
 
 class AddTaskEvent extends TaskEvent {
   final Task task;
@@ -31,4 +43,7 @@ class DeleteTaskEvent extends TaskEvent {
   final int taskID;
 
   const DeleteTaskEvent({required this.taskID});
+
+  @override
+  List<Object> get props => [taskID];
 }

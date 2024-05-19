@@ -32,12 +32,31 @@ class DatabaseHelper {
       '''
         CREATE TABLE "task_table"(
         "_id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "first_name" TEXT NOT NULL,
-        "last_name" TEXT NOT NULL,
-        "email" TEXT NOT NULL,
-        "avatar" TEXT NOT NULL)
+        "todo" TEXT NOT NULL,
+        "completed" BOOLEAN NOT NULL,
+        "userId" INTEGER NOT NULL,
+        "page_number" INTEGER NOT NULL,
+        "total_pages" INTEGER NOT NULL
+        )
         ''',
     );
+  }
+
+  //! GET TOTAL PAGES NUMBER
+  Future<int> getTotalPages() async {
+    final db = await database;
+    final List<Map<String, dynamic>> results = await db!.query(
+      'task_table',
+      columns: ['total_pages'],
+      distinct: true,
+    );
+
+    if (results.isNotEmpty) {
+      final int totalPages = results.first['total_pages'];
+      return totalPages;
+    } else {
+      return 0;
+    }
   }
 
   //!CLOSE DATABASE
@@ -49,20 +68,53 @@ class DatabaseHelper {
     // databaseFactory.deleteDatabase(path);
   }
 
-  //!FETCH: GET ALL OBJECTS
-  Future<List<Map<String, dynamic>>> gettasks() async {
-    Database? db = await database;
+  // //!FETCH: GET ALL OBJECTS
+  // Future<List<Map<String, dynamic>>> gettasks() async {
+  //   Database? db = await database;
 
-    var result = await db!.query('task_table');
-    return result;
+  //   var result = await db!.query('task_table');
+  //   return result;
+  // }
+
+  //! Get Tasks For A Page
+  Future<List<Task>> getTasksForPage(int pageNumber) async {
+    Database? db = await database;
+    final List<Map<String, dynamic>> maps = await db!.query(
+      'task_table',
+      where: 'page_number = ?',
+      whereArgs: [pageNumber],
+    );
+
+    return List.generate(maps.length, (index) {
+      return Task(
+        id: maps[index]['_id'],
+        todo: maps[index]['todo'],
+        completed: maps[index]['completed'] == 1,
+        userId: maps[index]['userId'],
+      );
+    });
   }
 
   //!INSERT: ADD OBJECT
-  Future<int> addtask(Task task) async {
+  Future<void> insertTasks(
+      List<Task> tasks, int pageNumber, int totalPages) async {
     Database? db = await database;
+    final batch = db!.batch();
 
-    var result = await db!.insert('task_table', task.toJson());
-    return result;
+    for (Task task in tasks) {
+      batch.insert(
+        'task_table',
+        {
+          'todo': task.todo,
+          'completed': task.completed ? 1 : 0,
+          'userId': task.userId,
+          'page_number': pageNumber,
+          'total_pages': totalPages,
+        },
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    }
+    await batch.commit(noResult: true);
   }
 
   //!DELETE: DELETE OBJECT
@@ -74,15 +126,15 @@ class DatabaseHelper {
     return result;
   }
 
-  //!ADD MULTIPLE TASKS
-  Future<void> addTasks(List<Task> tasks) async {
-    final db = await database;
-    final batch = db!.batch();
-    for (final task in tasks) {
-      batch.insert('task_table', task.toJson());
-    }
-    await batch.commit();
-  }
+  // //!ADD MULTIPLE TASKS
+  // Future<void> addTasks(List<Task> tasks) async {
+  //   final db = await database;
+  //   final batch = db!.batch();
+  //   for (final task in tasks) {
+  //     batch.insert('task_table', task.toJson());
+  //   }
+  //   await batch.commit();
+  // }
 
   // //GET NUMBER OF taskS
   // Future<int> gettasksCount() async {

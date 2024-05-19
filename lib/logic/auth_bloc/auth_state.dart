@@ -12,7 +12,7 @@ final class AuthInitial extends AuthState {}
 class AuthLoadingState extends AuthState {}
 
 class AuthLoggedInState extends AuthState {
-  final User user;
+  final Auth user;
 
   const AuthLoggedInState({required this.user});
 }

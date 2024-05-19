@@ -15,7 +15,8 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    context.read<TaskBloc>().add(const GetTasksEvent(page: 1));
+    context.read<TaskBloc>().add(const GetTasksEvent(skip: 0));
+    print("BUILD");
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthLoggedoutState) {
@@ -53,15 +54,27 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
         ),
-        body: BlocBuilder<TaskBloc, TaskState>(
+        body: BlocConsumer<TaskBloc, TaskState>(
+          listener: (context, state) {
+            if (state is TasksError) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                MySnackBar(
+                  icon:
+                      const Icon(Icons.error, color: MyColors.myred, size: 18),
+                  message: state.message,
+                  margin: 5,
+                ),
+              );
+              context.read<TaskBloc>().add(const GetTasksEvent(skip: 0));
+            }
+          },
           builder: (context, state) {
             if (state is TasksLoaded) {
-              print('LISTTTTT ${state.tasks}');
               return LiquidPullToRefresh(
                 onRefresh: () async {
                   //?get notifications
                   await Future.delayed(const Duration(seconds: 1));
-                  context.read<TaskBloc>().add(const GetTasksEvent(page: 1));
+                  context.read<TaskBloc>().add(const GetTasksEvent(skip: 0));
                 },
                 animSpeedFactor: 1,
                 springAnimationDurationInMilliseconds: 100,
@@ -74,7 +87,9 @@ class HomeScreen extends StatelessWidget {
                   itemBuilder: (context, index) {
                     if (index == state.tasks.length) {
                       if (state.hasMore) {
-                        context.read<TaskBloc>().add(LoadNextPageEvent());
+                        context
+                            .read<TaskBloc>()
+                            .add(GetTasksEvent(skip: index));
                         return Lottie.asset('assets/lottie/SplashyLoader.json',
                             width: 50, height: 50);
                       } else {
@@ -85,25 +100,25 @@ class HomeScreen extends StatelessWidget {
                   },
                 ),
               );
-            } else if (state is TasksError) {
-              return GestureDetector(
-                  onTap: () {
-                    context.read<TaskBloc>().add(const GetTasksEvent(page: 1));
-                  },
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset('assets/images/tap_to_retry.png'),
-                      Text(
-                        'poor internet connection, Tap to retry!',
-                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                              color: Colors.black,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                      ),
-                    ],
-                  ));
+              // } else if (state is TasksError) {
+              //   return GestureDetector(
+              //       onTap: () {
+              //         context.read<TaskBloc>().add(const GetTasksEvent(skip: 0));
+              //       },
+              //       child: Column(
+              //         mainAxisAlignment: MainAxisAlignment.center,
+              //         children: [
+              //           Image.asset('assets/images/tap_to_retry.png'),
+              //           Text(
+              //             'poor internet connection, Tap to retry!',
+              //             style: Theme.of(context).textTheme.bodySmall!.copyWith(
+              //                   color: Colors.black,
+              //                   fontSize: 18,
+              //                   fontWeight: FontWeight.bold,
+              //                 ),
+              //           ),
+              //         ],
+              //       ));
             } else {
               return const TasksListLoading();
             }

@@ -39,7 +39,7 @@ class CustomTheme {
       //?text theme
       textTheme: TextTheme(
         //! 1
-        bodyMedium: GoogleFonts.roboto(
+        bodyMedium: GoogleFonts.nunito(
           fontSize: 32,
           fontWeight: FontWeight.bold,
         ),
