@@ -1,12 +1,12 @@
 import 'package:equatable/equatable.dart';
 
 class Task extends Equatable {
-  int id;
-  String todo;
-  bool completed;
-  int userId;
+  final int id;
+  final String todo;
+  final bool completed;
+  final int userId;
 
-  Task({
+  const Task({
     this.id = 0,
     this.todo = '',
     this.completed = true,

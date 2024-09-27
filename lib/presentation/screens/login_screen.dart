@@ -27,6 +27,7 @@ class _LogInScreenState extends State<LogInScreen> {
   Widget build(BuildContext context) {
     context.read<AuthBloc>().add(CheckAuthState());
     return BlocListener<InternetCubit, InternetState>(
+      listenWhen: (previous, current) => previous != current,
       listener: (context, state) {
         if (state is InternetDisconnected) {
           ScaffoldMessenger.of(context).showSnackBar(
