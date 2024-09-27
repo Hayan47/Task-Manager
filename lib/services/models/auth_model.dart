@@ -1,13 +1,16 @@
 class Auth {
-  final String token;
+  final String accessToken;
+  final String refreshToken;
 
-  Auth({required this.token});
+  Auth({required this.accessToken, required this.refreshToken});
 
   factory Auth.fromJson(Map<String, dynamic> json) => Auth(
-        token: json["token"],
+        accessToken: json["accessToken"],
+        refreshToken: json["refreshToken"],
       );
 
   Map<String, dynamic> toJson() => {
-        "token": token,
+        "accessToken": accessToken,
+        "refreshToken": refreshToken,
       };
 }

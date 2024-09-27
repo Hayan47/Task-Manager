@@ -8,7 +8,7 @@ class CustomTheme {
       //stretch
       // androidOverscrollIndicator: AndroidOverscrollIndicator.stretch,
       //back color
-      backgroundColor: MyColors.mywhite,
+      // backgroundColor: MyColors.mywhite,
       //scaff back color
       scaffoldBackgroundColor: MyColors.mywhite,
       // p color

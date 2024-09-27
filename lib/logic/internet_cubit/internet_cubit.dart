@@ -14,10 +14,13 @@ class InternetCubit extends Cubit<InternetState> {
   }
 
   void _handleConnectivityChanged(List<ConnectivityResult> results) {
+    print(results);
     if (results.any((result) => result == ConnectivityResult.none)) {
       emit(InternetDisconnected());
+      print(state);
     } else {
       emit(InternetConnected());
+      print(state);
     }
   }
 

@@ -62,7 +62,6 @@ class HomeScreen extends StatelessWidget {
                   icon:
                       const Icon(Icons.error, color: MyColors.myred, size: 18),
                   message: state.message,
-                  margin: 5,
                 ),
               );
               context.read<TaskBloc>().add(const GetTasksEvent(skip: 0));

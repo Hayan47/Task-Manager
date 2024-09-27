@@ -1,3 +1,5 @@
+import 'package:equatable/equatable.dart';
+
 class Address {
   final String address;
   final String city;
@@ -121,7 +123,7 @@ class Crypto {
   }
 }
 
-class User {
+class User extends Equatable {
   final int id;
   final String firstName;
   final String lastName;
@@ -135,11 +137,10 @@ class User {
   final String birthDate;
   final String image;
   final String bloodGroup;
-  final int height;
+  final double height;
   final double weight;
   final String eyeColor;
   final Hair hair;
-  final String domain;
   final String ip;
   final Address address;
   final String macAddress;
@@ -150,6 +151,7 @@ class User {
   final String ssn;
   final String userAgent;
   final Crypto crypto;
+  final String role;
 
   User({
     required this.id,
@@ -169,7 +171,6 @@ class User {
     required this.weight,
     required this.eyeColor,
     required this.hair,
-    required this.domain,
     required this.ip,
     required this.address,
     required this.macAddress,
@@ -180,6 +181,7 @@ class User {
     required this.ssn,
     required this.userAgent,
     required this.crypto,
+    required this.role,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -197,11 +199,10 @@ class User {
       birthDate: json['birthDate'],
       image: json['image'],
       bloodGroup: json['bloodGroup'],
-      height: json['height'],
+      height: json['height'].toDouble(),
       weight: json['weight'].toDouble(),
       eyeColor: json['eyeColor'],
       hair: Hair.fromJson(json['hair']),
-      domain: json['domain'],
       ip: json['ip'],
       address: Address.fromJson(json['address']),
       macAddress: json['macAddress'],
@@ -212,6 +213,11 @@ class User {
       ssn: json['ssn'],
       userAgent: json['userAgent'],
       crypto: Crypto.fromJson(json['crypto']),
+      role: json['role'],
     );
   }
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [id];
 }

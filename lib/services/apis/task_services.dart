@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:task_manager/services/models/task_model.dart';
 import 'package:task_manager/services/models/user_model.dart';
 
@@ -21,6 +23,7 @@ class TaskServices {
   //!get total pages number
   Future<int> totalPagesNumber() async {
     final response = await dio.get("todos");
+    print(response);
     if (response.statusCode == 200) {
       final data = response.data as Map<String, dynamic>;
       final totalPages = data["total"] as int;
@@ -34,6 +37,7 @@ class TaskServices {
   Future<List<Task>> getPageOfTasks(int skip) async {
     final response =
         await dio.get("todos", queryParameters: {'limit': 10, 'skip': skip});
+    print(response);
     if (response.statusCode == 200) {
       final data = response.data as Map<String, dynamic>;
       final tasks = data["todos"] as List<dynamic>;
@@ -53,6 +57,7 @@ class TaskServices {
         'userId': task.userId,
       }),
     );
+    print(response);
     if (response.statusCode == 200) {
       return response.data;
     } else {
@@ -70,6 +75,7 @@ class TaskServices {
         'userId': task.userId,
       }),
     );
+    print(response);
     if (response.statusCode == 200) {
       final data = response.data as Map<String, dynamic>;
       final task = Task.fromJson(data);
@@ -82,6 +88,7 @@ class TaskServices {
   //!delete task
   Future<String> deleteTask(int taskID) async {
     final response = await dio.delete("todos/$taskID");
+    print(response);
     if (response.statusCode == 200) {
       return 'task deleted successfully';
     } else {
@@ -94,6 +101,7 @@ class TaskServices {
     final response = await dio.get(
       "users/$id",
     );
+    // print(response);
     if (response.statusCode == 200) {
       final data = response.data as Map<String, dynamic>;
       final User user = User.fromJson(data);

@@ -1,4 +1,3 @@
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
@@ -30,8 +29,19 @@ class _LogInScreenState extends State<LogInScreen> {
     return BlocListener<InternetCubit, InternetState>(
       listener: (context, state) {
         if (state is InternetDisconnected) {
-          Navigator.pushReplacementNamed(context, 'home');
-          return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            MySnackBar(
+              icon: const Icon(Icons.error, color: MyColors.myred, size: 18),
+              message: "No Internet Connection",
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            MySnackBar(
+              icon: const Icon(Icons.done, color: Colors.green, size: 18),
+              message: "Internet Connection Restored",
+            ),
+          );
         }
       },
       child: Scaffold(
@@ -50,34 +60,24 @@ class _LogInScreenState extends State<LogInScreen> {
             BlocConsumer<AuthBloc, AuthState>(
               listener: (context, state) {
                 if (state is AuthLoginErrorState) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    MySnackBar(
-                      icon: const Icon(Icons.error,
-                          color: MyColors.myred, size: 18),
-                      message: state.message,
-                      margin: 5,
-                    ),
-                  );
+                  if (state.message == "wrong email or password") {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      MySnackBar(
+                        icon: const Icon(Icons.error,
+                            color: MyColors.myred, size: 18),
+                        message: state.message,
+                      ),
+                    );
+                  }
                 } else if (state is AuthLoggedInState) {
                   Navigator.pushReplacementNamed(context, 'home');
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    MySnackBar(
-                      icon:
-                          const Icon(Icons.done, color: Colors.green, size: 18),
-                      message: 'welcome back',
-                      margin: 5,
-                    ),
-                  );
-                  // } else if (state is AuthLoadingState) {
-                  //   showDialog(
-                  //     context: context,
-                  //     builder: (context) {
-                  //       return const Center(
-                  //           child: CircularProgressIndicator(
-                  //         color: Colors.red,
-                  //       ));
-                  //     },
-                  //   );
+                  // ScaffoldMessenger.of(context).showSnackBar(
+                  //   MySnackBar(
+                  //     icon: const Icon(Icons.done, color: Colors.green, size: 18),
+                  //     message: 'welcome back',
+                  //     margin: 5,
+                  //   ),
+                  // );
                 }
               },
               builder: (context, state) {
@@ -290,19 +290,19 @@ class _LogInScreenState extends State<LogInScreen> {
                                               mainAxisAlignment:
                                                   MainAxisAlignment.spaceEvenly,
                                               children: [
-                                                Container(
+                                                SizedBox(
                                                   width: 40,
                                                   height: 40,
                                                   child: Image.asset(
                                                       'assets/images/google.png'),
                                                 ),
-                                                Container(
+                                                SizedBox(
                                                   width: 50,
                                                   height: 50,
                                                   child: Image.asset(
                                                       'assets/images/facebook.png'),
                                                 ),
-                                                Container(
+                                                SizedBox(
                                                   width: 40,
                                                   height: 40,
                                                   child: Image.asset(

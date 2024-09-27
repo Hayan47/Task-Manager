@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 import 'package:task_manager/constants/my_colors.dart';
@@ -20,6 +19,7 @@ class TaskScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     _todoController = TextEditingController(text: task.todo);
     context.read<TaskDetailsBloc>().add(GetUserInfo(id: task.userId));
+    print("H");
     return Center(
       child: SingleChildScrollView(
         child: AlertDialog(
@@ -107,7 +107,6 @@ class TaskScreen extends StatelessWidget {
                                         icon: const Icon(Icons.done,
                                             color: Colors.green, size: 18),
                                         message: state.message,
-                                        margin: 5,
                                       ),
                                     );
                                     Navigator.pop(context);
@@ -117,7 +116,6 @@ class TaskScreen extends StatelessWidget {
                                         icon: const Icon(Icons.done,
                                             color: Colors.green, size: 18),
                                         message: state.message,
-                                        margin: 5,
                                       ),
                                     );
                                     Navigator.pop(context);
@@ -127,7 +125,6 @@ class TaskScreen extends StatelessWidget {
                                         icon: const Icon(Icons.error,
                                             color: MyColors.myred, size: 18),
                                         message: state.message,
-                                        margin: 5,
                                       ),
                                     );
                                   }

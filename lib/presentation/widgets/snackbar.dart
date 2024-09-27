@@ -7,19 +7,13 @@ class MySnackBar extends SnackBar {
     super.key,
     required Icon icon,
     required String message,
-    required double margin,
   }) : super(
           content: Container(
-            height: 60,
+            height: 50,
             padding: const EdgeInsets.symmetric(horizontal: 8),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              gradient: const LinearGradient(
-                colors: [
-                  Colors.black,
-                  MyColors.myred,
-                ],
-              ),
+              color: MyColors.myGrey,
               boxShadow: const [
                 BoxShadow(
                   color: Colors.black12,
@@ -47,17 +41,11 @@ class MySnackBar extends SnackBar {
               ],
             ),
           ),
-          margin: EdgeInsets.symmetric(vertical: margin, horizontal: 6),
+          margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 6),
           elevation: 0,
           duration: const Duration(seconds: 5),
           backgroundColor: Colors.transparent,
           behavior: SnackBarBehavior.floating,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          action: SnackBarAction(
-            label: 'Dismiss',
-            textColor: Colors.black,
-            onPressed: () {},
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         );
 }

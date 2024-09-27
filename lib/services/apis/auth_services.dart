@@ -1,33 +1,42 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:task_manager/services/apis/dio_intercepters.dart';
 import 'package:task_manager/services/models/auth_model.dart';
 
 // username: 'kminchelle',
 // password: '0lelplR',
 class AuthServices {
   late Dio dio;
+  final FlutterSecureStorage flutterSecureStorage;
 
-  AuthServices() {
+  AuthServices({required this.flutterSecureStorage}) {
     BaseOptions options = BaseOptions(
       baseUrl: 'https://dummyjson.com/auth/',
       receiveDataWhenStatusError: true,
       connectTimeout: const Duration(seconds: 60),
       receiveTimeout: const Duration(seconds: 60),
       headers: {'Content-Type': 'application/json'},
-      validateStatus: (status) => true,
+      validateStatus: (status) => status != 401,
     );
     dio = Dio(options);
+    dio.interceptors.add(TokenRefreshInterceptor(dio, flutterSecureStorage));
+    // (dio.httpClientAdapter as IOHttpClientAdapter).createHttpClient = () =>
+    //     HttpClient()
+    //       ..badCertificateCallback =
+    //           (X509Certificate cert, String host, int port) => true;
   }
 
   //!login
   Future<Auth?> login(String email, String password) async {
     final response = await dio.post(
       "login",
-      data: {"username": email, "password": password},
+      data: {"username": email, "password": password, "expiresInMins": 1},
     );
-
+    print(response);
     if (response.statusCode == 200) {
-      final token = response.data["token"];
-      return Auth(token: token);
+      final accessToken = response.data["accessToken"];
+      final refreshToken = response.data["refreshToken"];
+      return Auth(accessToken: accessToken, refreshToken: refreshToken);
     } else {
       throw Exception("Login failed");
     }
@@ -43,14 +52,34 @@ class AuthServices {
         },
       ),
     );
-    //! Token Valid
+    print(response.statusCode);
+    print("AUTH RESPONSE $response");
     if (response.statusCode == 200) {
+      //! Token Valid
+      print("Token Valid");
       return true;
-      //! Token Expired
     } else if (response.statusCode == 401) {
+      //! Token Expired
+      print("Token Expired");
       return false;
     } else {
       throw Exception("Auth failed");
+    }
+  }
+
+  //!Refresh Tokens
+  Future<Auth?> refreshTokens(String refreshToken) async {
+    final response = await dio.post(
+      "refresh",
+      data: {"refreshToken": refreshToken},
+    );
+    print(response);
+    if (response.statusCode == 200) {
+      final accessToken = response.data["accessToken"];
+      final refreshToken = response.data["refreshToken"];
+      return Auth(accessToken: accessToken, refreshToken: refreshToken);
+    } else {
+      throw Exception("Login failed");
     }
   }
 }

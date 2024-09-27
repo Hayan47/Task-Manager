@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
-import 'package:task_manager/logic/internet_cubit/internet_cubit.dart';
 import 'package:task_manager/logic/task_bloc/task_bloc.dart';
 import 'package:task_manager/logic/task_details/task_details_bloc.dart';
 import 'package:task_manager/presentation/screens/task_screen.dart';
@@ -17,20 +16,16 @@ class MyTask extends StatelessWidget {
     final taskDetailsBloc = context.read<TaskDetailsBloc>();
     return GestureDetector(
       onTap: () async {
-        showGeneralDialog(
+        showDialog(
           context: context,
-          pageBuilder: (context, animation, secondaryAnimation) => Container(),
-          transitionDuration: const Duration(milliseconds: 200),
-          transitionBuilder: (context, animation, secondaryAnimation, child) {
+          builder: (context) {
             return MultiBlocProvider(
               providers: [
                 BlocProvider.value(value: taskBloc),
                 BlocProvider.value(value: taskDetailsBloc),
                 // BlocProvider(create: (_) => TaskDetailsBloc()),
               ],
-              child: ScaleTransition(
-                  scale: Tween<double>(begin: 0.5, end: 1).animate(animation),
-                  child: TaskScreen(task: task)),
+              child: TaskScreen(task: task),
             );
           },
         );

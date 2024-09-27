@@ -17,6 +17,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.5
+  flutter_secure_storage: ^9.2.2
   google_fonts: ^6.2.1
   http: ^1.2.1
   iconly: ^1.0.1
@@ -24,7 +25,6 @@ dependencies:
   lottie: ^3.1.0
   mockito: ^5.4.4
   path_provider: ^2.1.2
-  shared_preferences: ^2.2.2
   shimmer: ^3.0.0
   sqflite: ^2.3.3
 
