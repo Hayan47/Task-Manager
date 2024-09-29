@@ -68,13 +68,13 @@ class DatabaseHelper {
     // databaseFactory.deleteDatabase(path);
   }
 
-  // //!FETCH: GET ALL OBJECTS
-  // Future<List<Map<String, dynamic>>> gettasks() async {
-  //   Database? db = await database;
+  //!FETCH: GET ALL OBJECTS
+  Future<List<Map<String, dynamic>>> gettasks() async {
+    Database? db = await database;
 
-  //   var result = await db!.query('task_table');
-  //   return result;
-  // }
+    var result = await db!.query('task_table');
+    return result;
+  }
 
   //! Get Tasks For A Page
   Future<List<Task>> getTasksForPage(int pageNumber) async {
@@ -126,36 +126,11 @@ class DatabaseHelper {
     return result;
   }
 
-  // //!ADD MULTIPLE TASKS
-  // Future<void> addTasks(List<Task> tasks) async {
-  //   final db = await database;
-  //   final batch = db!.batch();
-  //   for (final task in tasks) {
-  //     batch.insert('task_table', task.toJson());
-  //   }
-  //   await batch.commit();
-  // }
+  //!Drop Table
+  Future<int> clearTable(String table_name) async {
+    Database? db = await database;
 
-  // //GET NUMBER OF taskS
-  // Future<int> gettasksCount() async {
-  //   Database? db = await database;
-  //   List<Map<String, dynamic>> x =
-  //       await db!.rawQuery('SELECT COUNT (*) from task_table');
-  //   int result = Sqflite.firstIntValue(x)!;
-  //   return result;
-  // }
-
-  //CONVERT MAP INTO LIST OF taskS
-  // Future<List<Task>> gettaskList() async {
-  //   var tasksMapList = await gettasks();
-  //   int count = tasksMapList.length;
-  //   List<Task> tasksList = [];
-  //   //for loop to add items to the list
-  //   for (int i = 0; i < count; i++) {
-  //     tasksList.add(Task.fromJson(tasksMapList[i]));
-  //   }
-  //   //or
-  //   //tasksMapList.map((e) => task.fromMap(e)).toList();
-  //   return tasksList;
-  // }
+    int result = await db!.delete(table_name);
+    return result;
+  }
 }

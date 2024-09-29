@@ -16,6 +16,8 @@ class GetTasksEvent extends TaskEvent {
   List<Object> get props => [skip];
 }
 
+class RefreshEvent extends TaskEvent {}
+
 class GetTasksFromCache extends TaskEvent {
   final int page;
 

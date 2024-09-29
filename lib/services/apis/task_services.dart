@@ -1,8 +1,5 @@
 import 'dart:convert';
-import 'dart:io';
-
 import 'package:dio/dio.dart';
-import 'package:dio/io.dart';
 import 'package:task_manager/services/models/task_model.dart';
 import 'package:task_manager/services/models/user_model.dart';
 
@@ -29,7 +26,7 @@ class TaskServices {
       final totalPages = data["total"] as int;
       return totalPages;
     } else {
-      throw Exception("Eroor Getting Total Pages Number");
+      throw Exception("Error Getting Total Pages Number");
     }
   }
 
@@ -43,7 +40,7 @@ class TaskServices {
       final tasks = data["todos"] as List<dynamic>;
       return tasks.map((task) => Task.fromJson(task)).toList();
     } else {
-      throw Exception("Eroor Getting Tasks");
+      throw Exception("Error Getting Tasks");
     }
   }
 
@@ -61,7 +58,7 @@ class TaskServices {
     if (response.statusCode == 200) {
       return response.data;
     } else {
-      throw Exception("Eroor Adding Task");
+      throw Exception("Error Adding Task");
     }
   }
 
@@ -81,7 +78,7 @@ class TaskServices {
       final task = Task.fromJson(data);
       return task;
     } else {
-      throw Exception("Eroor Updating Task");
+      throw Exception("Error Updating Task");
     }
   }
 
@@ -92,7 +89,7 @@ class TaskServices {
     if (response.statusCode == 200) {
       return 'task deleted successfully';
     } else {
-      throw Exception("Eroor Deleting Tasks");
+      throw Exception("Error Deleting Tasks");
     }
   }
 
@@ -107,7 +104,7 @@ class TaskServices {
       final User user = User.fromJson(data);
       return user;
     } else {
-      throw Exception("Eroor Getting User Info");
+      throw Exception("Error Getting User Info");
     }
   }
 }

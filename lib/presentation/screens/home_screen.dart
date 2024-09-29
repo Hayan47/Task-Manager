@@ -92,7 +92,8 @@ class HomeScreen extends StatelessWidget {
                   onRefresh: () async {
                     //?get notifications
                     await Future.delayed(const Duration(seconds: 1));
-                    context.read<TaskBloc>().add(const GetTasksEvent(skip: 0));
+                    // context.read<TaskBloc>().add(const GetTasksEvent(skip: 0));
+                    context.read<TaskBloc>().add(RefreshEvent());
                   },
                   animSpeedFactor: 1,
                   springAnimationDurationInMilliseconds: 100,

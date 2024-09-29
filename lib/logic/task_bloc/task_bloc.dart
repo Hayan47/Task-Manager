@@ -42,16 +42,24 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       try {
         int skip = event.skip;
         int page = skip ~/ 10;
+
+        //! Get Tasks from cache
         if (await isCacheValid(page)) {
           add(GetTasksFromCache(page: page));
           return;
         }
+
+        //! Check internet before api calls
         if (!isInternetConnected) {
           return;
         }
+
+        //! Get total tasks  number
         totalTasksNumber ??= await taskServices.totalPagesNumber();
 
+        //! Get tasks from api
         final List<Task> newTasks = await taskServices.getPageOfTasks(skip);
+
         //! Cache tasks in the database
         await databaseHelper.insertTasks(newTasks, page, totalTasksNumber!);
         tasks.addAll(newTasks);
@@ -63,8 +71,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         }
         emit(TasksLoaded(
             tasks: tasks, hasMore: hasMore, dateTime: DateTime.now()));
-        print(state);
-        print('FROM API');
+        print('From API');
       } catch (e) {
         emit(const TasksError(message: 'Error Getting Tasks'));
         print(state);
@@ -80,14 +87,25 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         tasks.addAll(newtasks);
         emit(TasksLoaded(
             tasks: tasks, hasMore: hasMore, dateTime: DateTime.now()));
-        print('FROM Cache');
-        print(state);
+        print('From Cache');
       } catch (e) {
         emit(const TasksError(message: 'Error Getting Tasks from Cache'));
         print(e);
         print(state);
       }
     });
+
+    on<RefreshEvent>(
+      (event, emit) async {
+        //! Check internet before api calls
+        if (!isInternetConnected) {
+          return;
+        }
+        await databaseHelper.clearTable('task_table');
+
+        add(const GetTasksEvent(skip: 0));
+      },
+    );
 
     on<AddTaskEvent>((event, emit) async {
       try {

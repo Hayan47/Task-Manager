@@ -19,7 +19,6 @@ class TaskScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     _todoController = TextEditingController(text: task.todo);
     context.read<TaskDetailsBloc>().add(GetUserInfo(id: task.userId));
-    print("H");
     return Center(
       child: SingleChildScrollView(
         child: AlertDialog(
