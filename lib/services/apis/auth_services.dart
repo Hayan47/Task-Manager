@@ -20,10 +20,6 @@ class AuthServices {
     );
     dio = Dio(options);
     dio.interceptors.add(TokenRefreshInterceptor(dio, flutterSecureStorage));
-    // (dio.httpClientAdapter as IOHttpClientAdapter).createHttpClient = () =>
-    //     HttpClient()
-    //       ..badCertificateCallback =
-    //           (X509Certificate cert, String host, int port) => true;
   }
 
   //!login
