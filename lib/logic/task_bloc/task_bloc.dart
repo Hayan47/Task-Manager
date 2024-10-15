@@ -1,17 +1,14 @@
 import 'dart:async';
-
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:task_manager/data/repositories/task_repository.dart';
 import 'package:task_manager/logic/internet_cubit/internet_cubit.dart';
-import 'package:task_manager/services/apis/task_services.dart';
-import 'package:task_manager/services/database_helper.dart';
-import 'package:task_manager/services/models/task_model.dart';
+import 'package:task_manager/data/models/task_model.dart';
 part 'task_event.dart';
 part 'task_state.dart';
 
 class TaskBloc extends Bloc<TaskEvent, TaskState> {
-  TaskServices taskServices;
-  final DatabaseHelper databaseHelper;
+  final TaskRepository taskRepository;
   final InternetCubit internetCubit;
   late StreamSubscription internetSubscription;
   bool isInternetConnected = false;
@@ -19,17 +16,11 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   bool hasMore = true;
   List<Task> tasks = [];
 
-  Future<bool> isCacheValid(int page) async {
-    final tasks = await databaseHelper.getTasksForPage(page);
-    return tasks.isEmpty ? false : true;
-  }
-
   TaskBloc({
     required this.internetCubit,
-    required this.databaseHelper,
-    required this.taskServices,
+    required this.taskRepository,
   }) : super(TaskInitial()) {
-    // Subscribe to the InternetCubit's stream
+    // Subscribe to InternetCubit stream
     internetSubscription = internetCubit.stream.listen((internetState) {
       if (internetState is InternetConnected) {
         isInternetConnected = true;
@@ -43,25 +34,20 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         int skip = event.skip;
         int page = skip ~/ 10;
 
-        //! Get Tasks from cache
-        if (await isCacheValid(page)) {
+        if (await taskRepository.isCacheValid(page)) {
           add(GetTasksFromCache(page: page));
+          print('From Cache');
           return;
         }
 
-        //! Check internet before api calls
         if (!isInternetConnected) {
           return;
         }
 
-        //! Get total tasks  number
-        totalTasksNumber ??= await taskServices.totalPagesNumber();
+        totalTasksNumber ??= await taskRepository.getTotalTasksNumber();
+        final List<Task> newTasks = await taskRepository.getTasksFromApi(skip);
+        print('From API');
 
-        //! Get tasks from api
-        final List<Task> newTasks = await taskServices.getPageOfTasks(skip);
-
-        //! Cache tasks in the database
-        await databaseHelper.insertTasks(newTasks, page, totalTasksNumber!);
         tasks.addAll(newTasks);
         if (skip >= totalTasksNumber!) {
           skip += skip - totalTasksNumber!;
@@ -69,29 +55,26 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         } else {
           hasMore = true;
         }
+
         emit(TasksLoaded(
             tasks: tasks, hasMore: hasMore, dateTime: DateTime.now()));
-        print('From API');
       } catch (e) {
         emit(const TasksError(message: 'Error Getting Tasks'));
-        print(state);
         print(e);
       }
     });
 
     on<GetTasksFromCache>((event, emit) async {
       try {
-        final newtasks = await databaseHelper.getTasksForPage(event.page);
-        final totalPages = await databaseHelper.getTotalPages();
+        final newTasks = await taskRepository.getTasksFromCache(event.page);
+        final totalPages = await taskRepository.getTotalPages();
         final hasMore = totalPages > event.page;
-        tasks.addAll(newtasks);
+        tasks.addAll(newTasks);
         emit(TasksLoaded(
             tasks: tasks, hasMore: hasMore, dateTime: DateTime.now()));
-        print('From Cache');
       } catch (e) {
         emit(const TasksError(message: 'Error Getting Tasks from Cache'));
         print(e);
-        print(state);
       }
     });
 
@@ -101,8 +84,9 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         if (!isInternetConnected) {
           return;
         }
-        await databaseHelper.clearTable('task_table');
 
+        await taskRepository.clearCache();
+        tasks = [];
         add(const GetTasksEvent(skip: 0));
       },
     );
@@ -111,7 +95,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       try {
         emit(TasksLoading());
         print(state);
-        await taskServices.addTask(event.task);
+        await taskRepository.addTask(event.task);
         emit(const TaskAdded(message: 'Task Added Successfully'));
         print(state);
       } catch (e) {
@@ -124,7 +108,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       try {
         emit(TasksLoading());
         print(state);
-        await taskServices.updateTask(event.task);
+        await taskRepository.updateTask(event.task);
         emit(const TaskUpdated(message: 'task updated sucessfully'));
         print(state);
         add(const GetTasksEvent(skip: 0));
@@ -138,7 +122,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       try {
         emit(TasksLoading());
         print(state);
-        await taskServices.deleteTask(event.taskID);
+        await taskRepository.deleteTask(event.taskID);
         emit(const TaskDeleted(message: 'Task Deleted Successfully'));
         print(state);
         add(const GetTasksEvent(skip: 0));
@@ -147,5 +131,11 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         print(state);
       }
     });
+  }
+
+  @override
+  Future<void> close() {
+    internetSubscription.cancel();
+    return super.close();
   }
 }

@@ -1,7 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
-import 'package:task_manager/services/models/task_model.dart';
+import 'package:task_manager/data/models/task_model.dart';
 
 //!MAIN CLASS
 class DatabaseHelper {

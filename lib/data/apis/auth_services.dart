@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:task_manager/services/apis/dio_intercepters.dart';
-import 'package:task_manager/services/models/auth_model.dart';
+import 'package:task_manager/data/apis/dio_intercepters.dart';
+import 'package:task_manager/data/models/auth_model.dart';
 
 // username: 'kminchelle',
 // password: '0lelplR',

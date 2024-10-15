@@ -5,20 +5,9 @@ import 'package:task_manager/constants/my_colors.dart';
 class CustomTheme {
   static ThemeData get appTheme {
     return ThemeData(
-      //stretch
-      // androidOverscrollIndicator: AndroidOverscrollIndicator.stretch,
-      //back color
-      // backgroundColor: MyColors.mywhite,
-      //scaff back color
       scaffoldBackgroundColor: MyColors.mywhite,
-      // p color
-      primaryColor: MyColors.myred,
-      //sec color
+      primaryColor: MyColors.mywhite,
       secondaryHeaderColor: Colors.black,
-      //hint color
-      hintColor: MyColors.myBlue,
-      //acc color
-      // accentColor: MyColors.myBlue2,
       //? app bar theme
       appBarTheme: AppBarTheme(
         elevation: 0,
@@ -31,7 +20,6 @@ class CustomTheme {
         actionsIconTheme: const IconThemeData(
           color: MyColors.mywhite,
         ),
-        //icon theme
         iconTheme: const IconThemeData(
           color: MyColors.mywhite,
         ),
@@ -49,9 +37,6 @@ class CustomTheme {
           fontWeight: FontWeight.bold,
         ),
       ),
-      //?bottom nav bar theme
-      bottomNavigationBarTheme:
-          const BottomNavigationBarThemeData(backgroundColor: MyColors.mywhite),
     );
   }
 }

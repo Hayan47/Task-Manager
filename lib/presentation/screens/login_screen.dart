@@ -30,6 +30,7 @@ class _LogInScreenState extends State<LogInScreen> {
       listenWhen: (previous, current) => previous != current,
       listener: (context, state) {
         if (state is InternetDisconnected) {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(
             MySnackBar(
               icon: const Icon(Icons.error, color: MyColors.myred, size: 18),
@@ -37,6 +38,7 @@ class _LogInScreenState extends State<LogInScreen> {
             ),
           );
         } else {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(
             MySnackBar(
               icon: const Icon(Icons.done, color: Colors.green, size: 18),
@@ -62,6 +64,7 @@ class _LogInScreenState extends State<LogInScreen> {
               listener: (context, state) {
                 if (state is AuthLoginErrorState) {
                   if (state.message == "wrong email or password") {
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
                     ScaffoldMessenger.of(context).showSnackBar(
                       MySnackBar(
                         icon: const Icon(Icons.error,
@@ -72,13 +75,6 @@ class _LogInScreenState extends State<LogInScreen> {
                   }
                 } else if (state is AuthLoggedInState) {
                   Navigator.pushReplacementNamed(context, 'home');
-                  // ScaffoldMessenger.of(context).showSnackBar(
-                  //   MySnackBar(
-                  //     icon: const Icon(Icons.done, color: Colors.green, size: 18),
-                  //     message: 'welcome back',
-                  //     margin: 5,
-                  //   ),
-                  // );
                 }
               },
               builder: (context, state) {

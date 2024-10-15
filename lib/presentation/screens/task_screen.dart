@@ -8,7 +8,7 @@ import 'package:task_manager/logic/task_details/task_details_bloc.dart';
 import 'package:task_manager/presentation/widgets/button.dart';
 import 'package:task_manager/presentation/widgets/snackbar.dart';
 import 'package:task_manager/presentation/widgets/text_field.dart';
-import 'package:task_manager/services/models/task_model.dart';
+import 'package:task_manager/data/models/task_model.dart';
 
 class TaskScreen extends StatelessWidget {
   final Task task;
@@ -62,7 +62,7 @@ class TaskScreen extends StatelessWidget {
                                       .textTheme
                                       .bodySmall!
                                       .copyWith(
-                                        color: MyColors.myred,
+                                        color: Colors.black,
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -73,7 +73,7 @@ class TaskScreen extends StatelessWidget {
                                       .textTheme
                                       .bodySmall!
                                       .copyWith(
-                                        color: MyColors.myred,
+                                        color: Colors.black,
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -84,14 +84,22 @@ class TaskScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 10),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 35),
-                          child: MyTextField(
-                            controller: _todoController,
-                            validator: (p0) {},
-                            textInputType: TextInputType.text,
-                            hint: task.todo,
-                            obscureText: false,
-                            maxLines: 4,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
+                              color: Colors.white30,
+                              borderRadius: BorderRadius.circular(18),
+                            ),
+                            child: MyTextField(
+                              controller: _todoController,
+                              validator: (p0) {},
+                              textInputType: TextInputType.text,
+                              hint: task.todo,
+                              obscureText: false,
+                              maxLines: 4,
+                            ),
                           ),
                         ),
                         //! buttons
@@ -101,6 +109,8 @@ class TaskScreen extends StatelessWidget {
                               BlocConsumer<TaskBloc, TaskState>(
                                 listener: (context, state) {
                                   if (state is TaskUpdated) {
+                                    ScaffoldMessenger.of(context)
+                                        .hideCurrentSnackBar();
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       MySnackBar(
                                         icon: const Icon(Icons.done,
@@ -110,6 +120,8 @@ class TaskScreen extends StatelessWidget {
                                     );
                                     Navigator.pop(context);
                                   } else if (state is TaskDeleted) {
+                                    ScaffoldMessenger.of(context)
+                                        .hideCurrentSnackBar();
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       MySnackBar(
                                         icon: const Icon(Icons.done,
@@ -119,6 +131,8 @@ class TaskScreen extends StatelessWidget {
                                     );
                                     Navigator.pop(context);
                                   } else if (state is TasksError) {
+                                    ScaffoldMessenger.of(context)
+                                        .hideCurrentSnackBar();
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       MySnackBar(
                                         icon: const Icon(Icons.error,
@@ -131,17 +145,18 @@ class TaskScreen extends StatelessWidget {
                                 builder: (context, state) {
                                   if (state is TasksLoading) {
                                     return Lottie.asset(
-                                        'assets/lottie/SplashyLoader.json',
-                                        width: 50,
-                                        height: 50);
+                                      'assets/lottie/SplashyLoader.json',
+                                      width: 50,
+                                      height: 50,
+                                    );
                                   } else {
                                     return Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceEvenly,
                                       children: [
                                         MyButton(
-                                          color: MyColors.myred,
-                                          textColor: MyColors.mywhite,
+                                          color: MyColors.mywhite,
+                                          textColor: Colors.black,
                                           text: 'Delete',
                                           onpressed: () {
                                             context.read<TaskBloc>().add(

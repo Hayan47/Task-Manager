@@ -1,20 +1,19 @@
 import 'dart:async';
-
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:task_manager/data/repositories/task_details_repository.dart';
 import 'package:task_manager/logic/internet_cubit/internet_cubit.dart';
-import 'package:task_manager/services/apis/task_services.dart';
-import 'package:task_manager/services/models/user_model.dart';
-
+import 'package:task_manager/data/models/user_model.dart';
 part 'task_details_event.dart';
 part 'task_details_state.dart';
 
 class TaskDetailsBloc extends Bloc<TaskDetailsEvent, TaskDetailsState> {
-  TaskServices taskServices;
+  final TaskDetailsRepository taskDetailsRepository;
   final InternetCubit internetCubit;
   late StreamSubscription internetSubscription;
   bool isInternetConnected = false;
-  TaskDetailsBloc({required this.internetCubit, required this.taskServices})
+  TaskDetailsBloc(
+      {required this.internetCubit, required this.taskDetailsRepository})
       : super(TaskDetailsInitial()) {
     internetSubscription = internetCubit.stream.listen((internetState) {
       if (internetState is InternetConnected) {
@@ -30,8 +29,9 @@ class TaskDetailsBloc extends Bloc<TaskDetailsEvent, TaskDetailsState> {
         if (internetCubit.state == InternetDisconnected()) {
           emit(const TaskDetailsError(message: 'No Internet Connection!'));
           print(state);
+          return;
         }
-        final user = await taskServices.getUserInfo(event.id);
+        final user = await taskDetailsRepository.getUserInfo(event.id);
         emit(TaskDetailsLoaded(user: user));
         print(state);
       } catch (e) {
@@ -40,12 +40,10 @@ class TaskDetailsBloc extends Bloc<TaskDetailsEvent, TaskDetailsState> {
         print(state);
       }
     });
-
-    @override
-    Future<void> close() {
-      // Cancel the internet connectivity subscription to avoid memory leaks
-      internetSubscription.cancel();
-      return super.close();
-    }
+  }
+  @override
+  Future<void> close() {
+    internetSubscription.cancel();
+    return super.close();
   }
 }

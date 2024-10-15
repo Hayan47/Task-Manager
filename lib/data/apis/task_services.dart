@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:task_manager/services/models/task_model.dart';
-import 'package:task_manager/services/models/user_model.dart';
+import 'package:task_manager/data/models/task_model.dart';
+import 'package:task_manager/data/models/user_model.dart';
 
 class TaskServices {
   late Dio dio;
@@ -23,8 +23,8 @@ class TaskServices {
     print(response);
     if (response.statusCode == 200) {
       final data = response.data as Map<String, dynamic>;
-      final totalPages = data["total"] as int;
-      return totalPages;
+      final totalTasks = data["total"] as int;
+      return totalTasks;
     } else {
       throw Exception("Error Getting Total Pages Number");
     }

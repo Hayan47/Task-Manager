@@ -3,11 +3,11 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:task_manager/services/apis/auth_services.dart';
-import 'package:task_manager/services/apis/task_services.dart';
-import 'package:task_manager/services/models/auth_model.dart';
-import 'package:task_manager/services/models/task_model.dart';
-import 'package:task_manager/services/models/user_model.dart';
+import 'package:task_manager/data/apis/auth_services.dart';
+import 'package:task_manager/data/apis/task_services.dart';
+import 'package:task_manager/data/models/auth_model.dart';
+import 'package:task_manager/data/models/task_model.dart';
+import 'package:task_manager/data/models/user_model.dart';
 
 // Generate a Mock for Dio
 @GenerateMocks([Dio, FlutterSecureStorage])

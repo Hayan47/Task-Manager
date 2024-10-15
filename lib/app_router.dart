@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:task_manager/data/repositories/auth_repository.dart';
+import 'package:task_manager/data/repositories/task_details_repository.dart';
+import 'package:task_manager/data/repositories/task_repository.dart';
 import 'package:task_manager/logic/auth_bloc/auth_bloc.dart';
 import 'package:task_manager/logic/internet_cubit/internet_cubit.dart';
 import 'package:task_manager/logic/task_bloc/task_bloc.dart';
 import 'package:task_manager/logic/task_details/task_details_bloc.dart';
 import 'package:task_manager/presentation/screens/home_screen.dart';
 import 'package:task_manager/presentation/screens/login_screen.dart';
-import 'package:task_manager/services/apis/auth_services.dart';
-import 'package:task_manager/services/apis/task_services.dart';
-import 'package:task_manager/services/database_helper.dart';
+import 'package:task_manager/data/apis/auth_services.dart';
+import 'package:task_manager/data/apis/task_services.dart';
+import 'package:task_manager/data/database_helper.dart';
 
 class AppRouter {
   late AuthBloc authBloc;
@@ -20,6 +23,9 @@ class AppRouter {
   late TaskServices taskServices;
   late FlutterSecureStorage flutterSecureStorage;
   late DatabaseHelper databaseHelper;
+  late AuthRepository authRepository;
+  late TaskRepository taskRepository;
+  late TaskDetailsRepository taskDetailsRepository;
 
   AppRouter() {
     _initializeAppRouter();
@@ -35,20 +41,26 @@ class AppRouter {
     authService = AuthServices(flutterSecureStorage: flutterSecureStorage);
     taskServices = TaskServices();
 
+    // Initialize Repos
+    authRepository = AuthRepository(
+        authServices: authService, flutterSecureStorage: flutterSecureStorage);
+    taskRepository = TaskRepository(
+        taskServices: taskServices, databaseHelper: databaseHelper);
+    taskDetailsRepository = TaskDetailsRepository(taskServices: taskServices);
+
+    // Initialize Blocs
     authBloc = AuthBloc(
       internetCubit: internetCubit,
-      authService: authService,
-      flutterSecureStorage: flutterSecureStorage,
+      authRepository: authRepository,
     );
 
     taskBloc = TaskBloc(
       internetCubit: internetCubit,
-      taskServices: taskServices,
-      databaseHelper: databaseHelper,
+      taskRepository: taskRepository,
     );
 
     taskDetailsBloc = TaskDetailsBloc(
-      taskServices: taskServices,
+      taskDetailsRepository: taskDetailsRepository,
       internetCubit: internetCubit,
     );
   }

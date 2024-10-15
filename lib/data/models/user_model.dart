@@ -218,6 +218,68 @@ class User extends Equatable {
   }
 
   @override
-  // TODO: implement props
   List<Object?> get props => [id];
+}
+
+// Helper method to create a sample user for testing
+User createSampleUser({
+  int id = 1,
+}) {
+  return User(
+    id: 1,
+    firstName: 'firstName',
+    lastName: 'lastName',
+    maidenName: 'maidenName',
+    age: 10,
+    gender: 'gender',
+    email: 'email',
+    phone: 'phone',
+    username: 'username',
+    password: 'password',
+    birthDate: 'birthDate',
+    image: 'image',
+    bloodGroup: 'bloodGroup',
+    height: 4,
+    weight: 4,
+    eyeColor: 'eyeColor',
+    hair: Hair(color: 'color', type: 'type'),
+    ip: 'ip',
+    address: Address(
+      address: 'address',
+      city: 'city',
+      coordinates: Coordinates(lat: 0, lng: 0),
+      postalCode: 'postalCode',
+      state: 'state',
+    ),
+    macAddress: 'macAddress',
+    university: 'university',
+    bank: Bank(
+      cardExpire: 'cardExpire',
+      cardNumber: 'cardNumber',
+      cardType: 'cardType',
+      currency: 'currency',
+      iban: 'iban',
+    ),
+    company: Company(
+      address: Address(
+        address: 'address',
+        city: 'city',
+        coordinates: Coordinates(lat: 0, lng: 0),
+        postalCode: 'postalCode',
+        state: 'state',
+      ),
+      department: 'department',
+      name: 'name',
+      title: 'title',
+    ),
+    ein: 'ein',
+    ssn: 'ssn',
+    userAgent: 'userAgent',
+    crypto: Crypto(
+      coin: 'coin',
+      wallet: 'wallet',
+      network: 'network',
+    ),
+    role: 'role',
+  );
 }

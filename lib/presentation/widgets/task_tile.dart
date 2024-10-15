@@ -4,7 +4,7 @@ import 'package:lottie/lottie.dart';
 import 'package:task_manager/logic/task_bloc/task_bloc.dart';
 import 'package:task_manager/logic/task_details/task_details_bloc.dart';
 import 'package:task_manager/presentation/screens/task_screen.dart';
-import 'package:task_manager/services/models/task_model.dart';
+import 'package:task_manager/data/models/task_model.dart';
 
 class MyTask extends StatelessWidget {
   final Task task;
@@ -23,7 +23,6 @@ class MyTask extends StatelessWidget {
               providers: [
                 BlocProvider.value(value: taskBloc),
                 BlocProvider.value(value: taskDetailsBloc),
-                // BlocProvider(create: (_) => TaskDetailsBloc()),
               ],
               child: TaskScreen(task: task),
             );
