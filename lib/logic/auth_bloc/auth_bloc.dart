@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:task_manager/data/logger_service.dart';
 import 'package:task_manager/data/repositories/auth_repository.dart';
 import 'package:task_manager/logic/internet_cubit/internet_cubit.dart';
 import 'package:task_manager/data/models/auth_model.dart';
@@ -12,6 +13,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final InternetCubit internetCubit;
   late StreamSubscription internetSubscription;
   bool isInternetConnected = false;
+  final _logger = LoggerService().getLogger('Auth Bloc Logger');
 
   AuthBloc({
     required this.authRepository,
@@ -29,35 +31,35 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<LoginEvent>((event, emit) async {
       try {
         emit(AuthLoadingState());
-        print(state);
+        _logger.info(state);
         final auth = await authRepository.login(event.email, event.password);
         if (auth != null) {
           emit(AuthLoggedInState(user: auth));
-          print(state);
+          _logger.info(state);
         } else {
           emit(const AuthLoginErrorState(message: 'wrong email or password'));
-          print(state);
+          _logger.info(state);
         }
       } catch (e) {
         emit(const AuthLoginErrorState(message: 'wrong email or password'));
-        print(state);
-        print(e);
+        _logger.info(state);
+        _logger.severe(e);
       }
     });
 
     on<CheckAuthState>((event, emit) async {
       try {
         emit(AuthLoadingState());
-        print(state);
+        _logger.info(state);
         final accessToken = await authRepository.getAccessToken();
         final refreshToken = await authRepository.getRefreshToken();
         if (accessToken == null) {
-          print("access token is null");
+          _logger.info('access token is null');
           emit(const AuthLoginErrorState(message: 'You Need to Login'));
-          print(state);
+          _logger.info(state);
           return;
         }
-        print("access token found");
+        _logger.info('access token found');
 
         if (isInternetConnected) {
           final isAuthorized = await authRepository.checkAuth(accessToken);
@@ -66,13 +68,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             return;
           }
         }
-        print("Authenticated");
+        _logger.info('Authenticated');
         emit(AuthLoggedInState(
             user: Auth(accessToken: accessToken, refreshToken: refreshToken!)));
-        print(state);
+        _logger.info(state);
       } catch (e) {
         emit(const AuthLoginErrorState(message: 'Error Getting User Auth'));
-        print(state);
+        _logger.info(state);
+        _logger.severe(e);
       }
     });
 
@@ -80,10 +83,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       try {
         await authRepository.deleteTokens();
         emit(AuthLoggedoutState());
-        print(state);
+        _logger.info(state);
       } catch (e) {
         emit(const AuthLoginErrorState(message: 'Error'));
-        print(state);
+        _logger.info(state);
+        _logger.severe(e);
       }
     });
   }

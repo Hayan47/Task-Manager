@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:task_manager/data/logger_service.dart';
 import 'package:task_manager/data/repositories/task_repository.dart';
 import 'package:task_manager/logic/internet_cubit/internet_cubit.dart';
 import 'package:task_manager/data/models/task_model.dart';
@@ -11,6 +12,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   final TaskRepository taskRepository;
   final InternetCubit internetCubit;
   late StreamSubscription internetSubscription;
+  final _logger = LoggerService().getLogger('Task Bloc Logger');
   bool isInternetConnected = false;
   int? totalTasksNumber;
   bool hasMore = true;
@@ -36,7 +38,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
 
         if (await taskRepository.isCacheValid(page)) {
           add(GetTasksFromCache(page: page));
-          print('From Cache');
+          _logger.info('From Cache');
           return;
         }
 
@@ -46,7 +48,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
 
         totalTasksNumber ??= await taskRepository.getTotalTasksNumber();
         final List<Task> newTasks = await taskRepository.getTasksFromApi(skip);
-        print('From API');
+        _logger.info("From API");
 
         tasks.addAll(newTasks);
         if (skip >= totalTasksNumber!) {
@@ -60,7 +62,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
             tasks: tasks, hasMore: hasMore, dateTime: DateTime.now()));
       } catch (e) {
         emit(const TasksError(message: 'Error Getting Tasks'));
-        print(e);
+        _logger.severe(e);
       }
     });
 
@@ -74,7 +76,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
             tasks: tasks, hasMore: hasMore, dateTime: DateTime.now()));
       } catch (e) {
         emit(const TasksError(message: 'Error Getting Tasks from Cache'));
-        print(e);
+        _logger.severe(e);
       }
     });
 
@@ -94,41 +96,51 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     on<AddTaskEvent>((event, emit) async {
       try {
         emit(TasksLoading());
-        print(state);
-        await taskRepository.addTask(event.task);
-        emit(const TaskAdded(message: 'Task Added Successfully'));
-        print(state);
+        _logger.info(state);
+        bool added = await taskRepository.addTask(event.task);
+        if (added) {
+          emit(const TaskAdded(message: 'Task Added Successfully'));
+          _logger.info(state);
+          add(const GetTasksEvent(skip: 0));
+          _logger.info(state);
+        } else {
+          emit(const TasksError(message: 'Error Adding Task'));
+          _logger.info(state);
+        }
       } catch (e) {
         emit(const TasksError(message: 'Error Adding Task'));
-        print(state);
+        _logger.info(state);
+        _logger.severe(e);
       }
     });
 
     on<UpdateTaskEvent>((event, emit) async {
       try {
         emit(TasksLoading());
-        print(state);
+        _logger.info(state);
         await taskRepository.updateTask(event.task);
         emit(const TaskUpdated(message: 'task updated sucessfully'));
-        print(state);
+        _logger.info(state);
         add(const GetTasksEvent(skip: 0));
       } catch (e) {
         emit(const TasksError(message: 'Error Updating Task'));
-        print(state);
+        _logger.info(state);
+        _logger.severe(e);
       }
     });
 
     on<DeleteTaskEvent>((event, emit) async {
       try {
         emit(TasksLoading());
-        print(state);
+        _logger.info(state);
         await taskRepository.deleteTask(event.taskID);
         emit(const TaskDeleted(message: 'Task Deleted Successfully'));
-        print(state);
+        _logger.info(state);
         add(const GetTasksEvent(skip: 0));
       } catch (e) {
         emit(const TasksError(message: 'Error Deleting Task'));
-        print(state);
+        _logger.info(state);
+        _logger.severe(e);
       }
     });
   }

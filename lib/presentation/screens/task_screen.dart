@@ -96,7 +96,7 @@ class TaskScreen extends StatelessWidget {
                               controller: _todoController,
                               validator: (p0) {},
                               textInputType: TextInputType.text,
-                              hint: task.todo,
+                              hint: '',
                               obscureText: false,
                               maxLines: 4,
                             ),

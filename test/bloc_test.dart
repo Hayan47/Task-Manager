@@ -166,8 +166,6 @@ void main() {
         when(mockTaskRepository.getTasksFromCache(any))
             .thenAnswer((_) async => []);
         when(mockTaskRepository.getTotalPages()).thenAnswer((_) async => 2);
-        // when(mockInternetCubit.stream)
-        //     .thenAnswer((_) => Stream.value(InternetConnected()));
         return taskBloc;
       },
       act: (bloc) => bloc.add(const GetTasksEvent(skip: 0)),
@@ -185,8 +183,6 @@ void main() {
             .thenAnswer((_) async => 20);
         when(mockTaskRepository.getTasksFromApi(any))
             .thenAnswer((_) async => []);
-        // when(mockInternetCubit.stream)
-        //     .thenAnswer((_) => Stream.value(InternetConnected()));
         return taskBloc;
       },
       act: (bloc) => bloc.add(const GetTasksEvent(skip: 0)),
@@ -195,17 +191,80 @@ void main() {
       ],
     );
 
+    // blocTest<TaskBloc, TaskState>(
+    //   'emits [TasksLoading, TaskAdded] when AddTaskEvent is added',
+    //   build: () {
+    //     when(mockTaskRepository.addTask(any)).thenAnswer((_) async => true);
+    //     return taskBloc;
+    //   },
+    //   act: (bloc) => bloc.add(const AddTaskEvent(task: Task())),
+    //   expect: () => [
+    //     isA<TasksLoading>(),
+    //     isA<TaskAdded>(),
+    //   ],
+    // );
+
     blocTest<TaskBloc, TaskState>(
-      'emits [TasksLoading, TaskAdded] when AddTaskEvent is added',
+      'emits [TasksLoading, TaskAdded, TasksLoaded] when task is added successfully',
       build: () {
-        when(mockTaskRepository.addTask(any)).thenAnswer((_) async => {});
+        // Mock successful task addition
+        when(mockTaskRepository.addTask(any)).thenAnswer((_) async => true);
+        when(mockTaskRepository.isCacheValid(any))
+            .thenAnswer((_) async => true);
+        when(mockTaskRepository.getTasksFromCache(any))
+            .thenAnswer((_) async => []);
+        when(mockTaskRepository.getTotalPages()).thenAnswer((_) async => 2);
         return taskBloc;
       },
-      act: (bloc) => bloc.add(const AddTaskEvent(task: Task())),
+      act: (bloc) => bloc.add(AddTaskEvent(task: Task())),
       expect: () => [
-        isA<TasksLoading>(),
-        isA<TaskAdded>(),
+        TasksLoading(), // First state is loading
+        const TaskAdded(message: 'Task Added Successfully'), // Then success
+        isA<TasksLoaded>(), // Followed by loading when the GetTasksEvent is triggered
       ],
+      verify: (_) {
+        // Verify that the taskRepository's addTask method was called
+        verify(mockTaskRepository.addTask(Task())).called(1);
+        // Verify that GetTasksEvent was added after the task is added
+        // Assuming GetTasksEvent fetches the tasks after adding
+      },
+    );
+
+    blocTest<TaskBloc, TaskState>(
+      'emits [TasksLoading, TasksError] when task addition fails',
+      build: () {
+        // Mock failure to add task
+        when(mockTaskRepository.addTask(any)).thenAnswer((_) async => false);
+        return taskBloc;
+      },
+      act: (bloc) => bloc.add(AddTaskEvent(task: Task())),
+      expect: () => [
+        TasksLoading(), // First state is loading
+        const TasksError(message: 'Error Adding Task'), // Then failure
+      ],
+      verify: (_) {
+        // Verify that the taskRepository's addTask method was called
+        verify(mockTaskRepository.addTask(Task())).called(1);
+      },
+    );
+
+    blocTest<TaskBloc, TaskState>(
+      'emits [TasksLoading, TasksError] when an exception is thrown',
+      build: () {
+        // Mock an exception being thrown
+        when(mockTaskRepository.addTask(any))
+            .thenThrow(Exception('Failed to add task'));
+        return taskBloc;
+      },
+      act: (bloc) => bloc.add(AddTaskEvent(task: Task())),
+      expect: () => [
+        TasksLoading(), // First state is loading
+        const TasksError(message: 'Error Adding Task'), // Then error
+      ],
+      verify: (_) {
+        // Verify that the taskRepository's addTask method was called
+        verify(mockTaskRepository.addTask(Task())).called(1);
+      },
     );
 
     blocTest<TaskBloc, TaskState>(

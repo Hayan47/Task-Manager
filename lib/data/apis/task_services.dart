@@ -20,7 +20,6 @@ class TaskServices {
   //!get total pages number
   Future<int> totalPagesNumber() async {
     final response = await dio.get("todos");
-    print(response);
     if (response.statusCode == 200) {
       final data = response.data as Map<String, dynamic>;
       final totalTasks = data["total"] as int;
@@ -34,7 +33,6 @@ class TaskServices {
   Future<List<Task>> getPageOfTasks(int skip) async {
     final response =
         await dio.get("todos", queryParameters: {'limit': 10, 'skip': skip});
-    print(response);
     if (response.statusCode == 200) {
       final data = response.data as Map<String, dynamic>;
       final tasks = data["todos"] as List<dynamic>;
@@ -45,7 +43,7 @@ class TaskServices {
   }
 
   //!add task
-  Future<String> addTask(Task task) async {
+  Future<bool> addTask(Task task) async {
     final response = await dio.post(
       "todos/add",
       data: jsonEncode({
@@ -54,9 +52,8 @@ class TaskServices {
         'userId': task.userId,
       }),
     );
-    print(response);
-    if (response.statusCode == 200) {
-      return response.data;
+    if (response.statusCode == 201) {
+      return true;
     } else {
       throw Exception("Error Adding Task");
     }
@@ -72,7 +69,6 @@ class TaskServices {
         'userId': task.userId,
       }),
     );
-    print(response);
     if (response.statusCode == 200) {
       final data = response.data as Map<String, dynamic>;
       final task = Task.fromJson(data);
@@ -85,7 +81,6 @@ class TaskServices {
   //!delete task
   Future<String> deleteTask(int taskID) async {
     final response = await dio.delete("todos/$taskID");
-    print(response);
     if (response.statusCode == 200) {
       return 'task deleted successfully';
     } else {
@@ -98,7 +93,6 @@ class TaskServices {
     final response = await dio.get(
       "users/$id",
     );
-    // print(response);
     if (response.statusCode == 200) {
       final data = response.data as Map<String, dynamic>;
       final User user = User.fromJson(data);

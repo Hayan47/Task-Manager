@@ -31,7 +31,7 @@ class DatabaseHelper {
     await database.execute(
       '''
         CREATE TABLE "task_table"(
-        "_id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "_id" INTEGER PRIMARY KEY,
         "todo" TEXT NOT NULL,
         "completed" BOOLEAN NOT NULL,
         "userId" INTEGER NOT NULL,
@@ -63,9 +63,9 @@ class DatabaseHelper {
   Future closeDatabase() async {
     final db = await database;
     db!.close();
-    // Directory directory = await getApplicationDocumentsDirectory();
-    // String path = '${directory.path}tasks.db';
-    // databaseFactory.deleteDatabase(path);
+    Directory directory = await getApplicationDocumentsDirectory();
+    String path = '${directory.path}tasks.db';
+    databaseFactory.deleteDatabase(path);
   }
 
   //!FETCH: GET ALL OBJECTS
@@ -105,6 +105,7 @@ class DatabaseHelper {
       batch.insert(
         'task_table',
         {
+          '_id': task.id,
           'todo': task.todo,
           'completed': task.completed ? 1 : 0,
           'userId': task.userId,

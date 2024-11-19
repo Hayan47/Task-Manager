@@ -1,6 +1,10 @@
 # Task Manager Application
 
-This is a Flutter mobile application that interacts with the DummyJSON API, implements authentication using JWT (JSON Web Token), stores access and refresh tokens in secure storage, and refreshes tokens automatically using Dio. The app also displays a list of to-dos, handling pagination and caching data locally with SQLite.
+note: Valid Credentials
+
+username: emilys, password: emilyspass
+
+Flutter mobile application that interacts with the DummyJSON API, implements authentication using JWT (JSON Web Token), stores access and refresh tokens in secure storage, and refreshes tokens automatically using Dio. The app also displays a list of to-dos, handling pagination and caching data locally with SQLite, it supports landscape mode, has logging mechanism.
 
 ## Features
 
@@ -51,8 +55,6 @@ This app uses the [DummyJSON API](https://dummyjson.com/) for to-do data and aut
    flutter run
    ```
 
-## Usage
-
 ## Authentication
 1. Upon launching the app for the first time, you will be prompted to log in using your credentials.
 2. The app will fetch an access token and a refresh token, which are stored securely using flutter_secure_storage.
@@ -66,6 +68,8 @@ This app uses the [DummyJSON API](https://dummyjson.com/) for to-do data and aut
 ## Offline Mode
 - The app automatically detects when there is no internet connection and allows the user to browse cached data.
 - When internet connectivity is restored, the app syncs with the API and fetches the latest data.
+
+APK link: https://www.mediafire.com/file/c0qhokaauxmhm83/Task_Manager1.0.4.apk/file
 
 ## ScreenShots
 <p align="center">

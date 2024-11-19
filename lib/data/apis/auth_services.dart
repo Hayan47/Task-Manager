@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:task_manager/data/apis/dio_intercepters.dart';
+import 'package:task_manager/data/logger_service.dart';
 import 'package:task_manager/data/models/auth_model.dart';
 
 // username: 'kminchelle',
@@ -8,6 +9,7 @@ import 'package:task_manager/data/models/auth_model.dart';
 class AuthServices {
   late Dio dio;
   final FlutterSecureStorage flutterSecureStorage;
+  final _logger = LoggerService().getLogger('Auth Service Logger');
 
   AuthServices({required this.flutterSecureStorage}) {
     BaseOptions options = BaseOptions(
@@ -28,7 +30,6 @@ class AuthServices {
       "login",
       data: {"username": email, "password": password, "expiresInMins": 1},
     );
-    print(response);
     if (response.statusCode == 200) {
       final accessToken = response.data["accessToken"];
       final refreshToken = response.data["refreshToken"];
@@ -48,15 +49,13 @@ class AuthServices {
         },
       ),
     );
-    print(response.statusCode);
-    print("AUTH RESPONSE $response");
     if (response.statusCode == 200) {
       //! Token Valid
-      print("Token Valid");
+      _logger.info("Token Valid");
       return true;
     } else if (response.statusCode == 401) {
       //! Token Expired
-      print("Token Expired");
+      _logger.info("Token Expired");
       return false;
     } else {
       throw Exception("Auth failed");
@@ -69,7 +68,6 @@ class AuthServices {
       "refresh",
       data: {"refreshToken": refreshToken},
     );
-    print(response);
     if (response.statusCode == 200) {
       final accessToken = response.data["accessToken"];
       final refreshToken = response.data["refreshToken"];

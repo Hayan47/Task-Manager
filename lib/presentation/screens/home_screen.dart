@@ -7,15 +7,19 @@ import 'package:task_manager/constants/my_colors.dart';
 import 'package:task_manager/logic/auth_bloc/auth_bloc.dart';
 import 'package:task_manager/logic/internet_cubit/internet_cubit.dart';
 import 'package:task_manager/logic/task_bloc/task_bloc.dart';
+import 'package:task_manager/presentation/screens/add_task_screen.dart';
 import 'package:task_manager/presentation/widgets/snackbar.dart';
 import 'package:task_manager/presentation/widgets/task_tile.dart';
 import 'package:task_manager/presentation/widgets/tasks_loading_shimmer.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  final ScrollController scrollController = ScrollController();
+  HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
     context.read<TaskBloc>().add(const GetTasksEvent(skip: 0));
     return BlocListener<InternetCubit, InternetState>(
       listenWhen: (previous, current) => previous != current,
@@ -55,13 +59,22 @@ class HomeScreen extends StatelessWidget {
             backgroundColor: Colors.transparent,
             surfaceTintColor: Colors.transparent,
             elevation: 0,
-            title: Text(
-              'My Tasks',
-              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 28,
-                    color: Colors.black,
-                  ),
+            title: GestureDetector(
+              onTap: () {
+                scrollController.animateTo(
+                  0.0,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                );
+              },
+              child: Text(
+                'My Tasks',
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 28,
+                      color: Colors.black,
+                    ),
+              ),
             ),
             actions: [
               Padding(
@@ -104,30 +117,81 @@ class HomeScreen extends StatelessWidget {
                   height: 200,
                   color: Colors.transparent,
                   backgroundColor: MyColors.myred,
-                  child: ListView.builder(
-                    itemCount: state.tasks.length + 1,
-                    itemBuilder: (context, index) {
-                      if (index == state.tasks.length) {
-                        if (state.hasMore) {
-                          context
-                              .read<TaskBloc>()
-                              .add(GetTasksEvent(skip: index));
-                          return Lottie.asset(
-                              'assets/lottie/SplashyLoader.json',
-                              width: 50,
-                              height: 50);
-                        } else {
-                          return Container();
-                        }
-                      }
-                      return MyTask(task: state.tasks[index]);
-                    },
-                  ),
+                  child: isLandscape
+                      ? GridView.builder(
+                          controller: scrollController,
+                          gridDelegate:
+                              const SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 300,
+                          ),
+                          itemCount: state.tasks.length + 1,
+                          itemBuilder: (context, index) {
+                            if (index == state.tasks.length) {
+                              if (state.hasMore) {
+                                context
+                                    .read<TaskBloc>()
+                                    .add(GetTasksEvent(skip: index));
+                                return Center(
+                                  child: Lottie.asset(
+                                      'assets/lottie/SplashyLoader.json',
+                                      width: 50,
+                                      height: 50),
+                                );
+                              } else {
+                                return Container();
+                              }
+                            }
+                            return MyTask(task: state.tasks[index]);
+                          },
+                        )
+                      : ListView.builder(
+                          controller: scrollController,
+                          itemCount: state.tasks.length + 1,
+                          itemBuilder: (context, index) {
+                            if (index == state.tasks.length) {
+                              if (state.hasMore) {
+                                context
+                                    .read<TaskBloc>()
+                                    .add(GetTasksEvent(skip: index));
+                                return Lottie.asset(
+                                    'assets/lottie/SplashyLoader.json',
+                                    width: 50,
+                                    height: 50);
+                              } else {
+                                return Container();
+                              }
+                            }
+                            return MyTask(task: state.tasks[index]);
+                          },
+                        ),
                 );
               } else {
                 return const TasksListLoading();
               }
             },
+          ),
+          floatingActionButton: Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: FloatingActionButton(
+              backgroundColor: Colors.black54,
+              child: const Icon(
+                Icons.add,
+                color: MyColors.mywhite,
+              ),
+              onPressed: () async {
+                final taskBloc = context.read<TaskBloc>();
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return MultiBlocProvider(
+                        providers: [
+                          BlocProvider.value(value: taskBloc),
+                        ],
+                        child: AddTaskScreen(),
+                      );
+                    });
+              },
+            ),
           ),
         ),
       ),

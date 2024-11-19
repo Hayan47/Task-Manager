@@ -21,7 +21,7 @@ class _LogInScreenState extends State<LogInScreen> {
 
   final _emailcontroller = TextEditingController();
   final _passwordcontroller = TextEditingController();
-  final formKey2 = GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -78,6 +78,8 @@ class _LogInScreenState extends State<LogInScreen> {
                 }
               },
               builder: (context, state) {
+                final isLandscape =
+                    MediaQuery.of(context).orientation == Orientation.landscape;
                 return Column(
                   children: [
                     Expanded(
@@ -90,7 +92,7 @@ class _LogInScreenState extends State<LogInScreen> {
                               hasScrollBody: false,
                               //?main column
                               child: Form(
-                                key: formKey2,
+                                key: formKey,
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 40),
@@ -99,12 +101,20 @@ class _LogInScreenState extends State<LogInScreen> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       SizedBox(
-                                          height: MediaQuery.sizeOf(context)
-                                                  .height *
-                                              0.2),
+                                          height: isLandscape
+                                              ? MediaQuery.sizeOf(context)
+                                                      .height *
+                                                  0.1
+                                              : MediaQuery.sizeOf(context)
+                                                      .height *
+                                                  0.2),
                                       SizedBox(
-                                        height:
-                                            MediaQuery.sizeOf(context).height *
+                                        height: isLandscape
+                                            ? MediaQuery.sizeOf(context)
+                                                    .height *
+                                                0.6
+                                            : MediaQuery.sizeOf(context)
+                                                    .height *
                                                 0.41,
                                         child: Column(
                                           mainAxisAlignment:
@@ -241,7 +251,7 @@ class _LogInScreenState extends State<LogInScreen> {
                                                         text: 'LOGIN',
                                                         onpressed: () async {
                                                           final isValid =
-                                                              formKey2
+                                                              formKey
                                                                   .currentState!
                                                                   .validate();
                                                           if (!isValid) return;
@@ -327,5 +337,12 @@ class _LogInScreenState extends State<LogInScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _emailcontroller.clear();
+    _passwordcontroller.clear();
+    super.dispose();
   }
 }

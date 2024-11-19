@@ -169,14 +169,13 @@ class MockTaskRepository extends _i1.Mock implements _i7.TaskRepository {
       ) as _i8.Future<int>);
 
   @override
-  _i8.Future<void> addTask(_i9.Task? task) => (super.noSuchMethod(
+  _i8.Future<bool> addTask(_i9.Task? task) => (super.noSuchMethod(
         Invocation.method(
           #addTask,
           [task],
         ),
-        returnValue: _i8.Future<void>.value(),
-        returnValueForMissingStub: _i8.Future<void>.value(),
-      ) as _i8.Future<void>);
+        returnValue: _i8.Future<bool>.value(false),
+      ) as _i8.Future<bool>);
 
   @override
   _i8.Future<void> updateTask(_i9.Task? task) => (super.noSuchMethod(

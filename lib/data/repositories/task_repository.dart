@@ -39,8 +39,8 @@ class TaskRepository {
     return await databaseHelper.getTotalPages();
   }
 
-  Future<void> addTask(Task task) async {
-    await taskServices.addTask(task);
+  Future<bool> addTask(Task task) async {
+    return await taskServices.addTask(task);
   }
 
   Future<void> updateTask(Task task) async {

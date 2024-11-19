@@ -18,12 +18,12 @@ class MyButton extends StatelessWidget {
     return TextButton(
       onPressed: onpressed,
       style: ButtonStyle(
-        shape: MaterialStateProperty.all(
+        shape: WidgetStateProperty.all(
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(24))),
-        fixedSize: MaterialStateProperty.all(
+        fixedSize: WidgetStateProperty.all(
           Size((MediaQuery.sizeOf(context).width * 0.3), 40),
         ),
-        backgroundColor: MaterialStateProperty.all(color),
+        backgroundColor: WidgetStateProperty.all(color),
       ),
       child: Text(
         text,

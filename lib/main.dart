@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:task_manager/app_router.dart';
+import 'package:task_manager/data/logger_service.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  LoggerService();
   runApp(const MyApp());
 }
 

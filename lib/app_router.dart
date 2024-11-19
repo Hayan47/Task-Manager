@@ -109,7 +109,7 @@ class AppRouter {
               BlocProvider.value(value: authBloc),
               BlocProvider.value(value: internetCubit),
             ],
-            child: const HomeScreen(),
+            child: HomeScreen(),
           ),
         );
     }

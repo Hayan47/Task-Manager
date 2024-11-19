@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:task_manager/data/logger_service.dart';
 import 'package:task_manager/data/repositories/task_details_repository.dart';
 import 'package:task_manager/logic/internet_cubit/internet_cubit.dart';
 import 'package:task_manager/data/models/user_model.dart';
@@ -11,6 +12,7 @@ class TaskDetailsBloc extends Bloc<TaskDetailsEvent, TaskDetailsState> {
   final TaskDetailsRepository taskDetailsRepository;
   final InternetCubit internetCubit;
   late StreamSubscription internetSubscription;
+  final _logger = LoggerService().getLogger('Task Details Bloc Logger');
   bool isInternetConnected = false;
   TaskDetailsBloc(
       {required this.internetCubit, required this.taskDetailsRepository})
@@ -25,19 +27,19 @@ class TaskDetailsBloc extends Bloc<TaskDetailsEvent, TaskDetailsState> {
     on<GetUserInfo>((event, emit) async {
       try {
         emit(TaskDetailsLoading());
-        print(state);
+        _logger.info(state);
         if (internetCubit.state == InternetDisconnected()) {
           emit(const TaskDetailsError(message: 'No Internet Connection!'));
-          print(state);
+          _logger.info(state);
           return;
         }
         final user = await taskDetailsRepository.getUserInfo(event.id);
         emit(TaskDetailsLoaded(user: user));
-        print(state);
+        _logger.info(state);
       } catch (e) {
         emit(const TaskDetailsError(message: 'Error Getting Task Details'));
-        print(e);
-        print(state);
+        _logger.severe(e);
+        _logger.info(state);
       }
     });
   }

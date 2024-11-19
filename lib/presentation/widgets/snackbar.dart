@@ -41,11 +41,11 @@ class MySnackBar extends SnackBar {
               ],
             ),
           ),
-          margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 6),
+          // margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 6),
           elevation: 0,
           duration: const Duration(seconds: 5),
           backgroundColor: Colors.transparent,
-          behavior: SnackBarBehavior.floating,
+          // behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         );
 }

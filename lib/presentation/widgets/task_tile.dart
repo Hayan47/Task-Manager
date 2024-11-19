@@ -12,6 +12,8 @@ class MyTask extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
     final taskBloc = context.read<TaskBloc>();
     final taskDetailsBloc = context.read<TaskDetailsBloc>();
     return GestureDetector(
@@ -49,26 +51,59 @@ class MyTask extends StatelessWidget {
                     ),
                   ),
                 ),
-                Center(
-                  child: ListTile(
-                    leading: task.completed
-                        ? Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 17),
-                            child: Image.asset('assets/images/done.png',
-                                width: 25, height: 25),
-                          )
-                        : Lottie.asset('assets/lottie/sandclock.json'),
-                    title: Text(
-                      task.todo,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                            fontSize: 16,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
+                isLandscape
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          task.completed
+                              ? Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 17),
+                                  child: Image.asset('assets/images/done.png',
+                                      width: 25, height: 25),
+                                )
+                              : Lottie.asset('assets/lottie/sandclock.json',
+                                  width: 50, height: 50),
+                          Center(
+                            child: Text(
+                              maxLines: 4,
+                              textAlign: TextAlign.center,
+                              task.todo,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall!
+                                  .copyWith(
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                            ),
                           ),
-                    ),
-                  ),
-                ),
+                        ],
+                      )
+                    : Center(
+                        child: ListTile(
+                          leading: task.completed
+                              ? Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 17),
+                                  child: Image.asset('assets/images/done.png',
+                                      width: 25, height: 25),
+                                )
+                              : Lottie.asset('assets/lottie/sandclock.json'),
+                          title: Text(
+                            task.todo,
+                            overflow: TextOverflow.ellipsis,
+                            style:
+                                Theme.of(context).textTheme.bodySmall!.copyWith(
+                                      fontSize: 16,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                          ),
+                        ),
+                      ),
               ],
             ),
           ),
