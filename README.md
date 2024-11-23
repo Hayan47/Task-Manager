@@ -73,6 +73,6 @@ APK link: https://www.mediafire.com/file/c0qhokaauxmhm83/Task_Manager1.0.4.apk/f
 
 ## ScreenShots
 <p align="center">
-  <img src="https://github.com/Hayan47/Hayan47/blob/main/photo_2024-09-27_22-28-31.jpg" width="40%" />
-  <img src="https://github.com/Hayan47/Hayan47/blob/main/photo_2024-09-27_22-28-31%20(2).jpg" width="40%" />
+  <img src="https://github.com/Hayan47/Hayan47/blob/main/taskmanager1.jpg" width="40%" />
+  <img src="https://github.com/Hayan47/Hayan47/blob/main/taskmanager2.jpg" width="40%" />
 </p>
